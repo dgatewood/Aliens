@@ -17,17 +17,22 @@ document.addEventListener("keyup", keyUpHandler, false);
 var posX = 400;
 var posY = 590;
 var pSpeed = 5;
+var canFire = true;
 //enemy stuff
 var eX = 250;
 var eY = 250;
 var eDestX = 0;
 var eDestY = 0;
 var eRadius = 20;
-var eSpeed = .5;
+var eSpeed = 5;
+//bullet stuff
+var bX = -1;
+var bY = -1;
 //control stuff
 var rP = false;
 var lP = false;
 var uP = false;
+var angle = 0;
 
 function keyDownHandler(e){
 	if(e.keyCode == 39){
@@ -72,6 +77,15 @@ function spaceship()
 	line(posX, posY, posX + 50, posY);
 	line(posX + 50, posY, posX + 25, posY - 50);
 	line(posX + 25, posY - 50, posX, posY);
+	if(canFire)
+	{
+	ctx.beginPath();
+	ctx.fillStyle = "green";
+	ctx.strokeStyle = "green";
+	ctx.ellipse(posX + 25, posY - 25, 4, 4, Math.PI / 2, 0, 2 * Math.PI);
+	ctx.fill();
+	ctx.stroke();
+	}
 }
 
 function enemyShip()
@@ -86,38 +100,37 @@ function enemyShip()
 
 function enemyMovement()
 {
-	if(eX > 799)
+	if(eX > 799 - eRadius)
 	{
 		//angle range 90 - 270
-	
+		angle = Math.floor(Math.random() * 180) + 90;
 	}
-	if(eX < 0)
+	if(eX < 0 + eRadius)
 	{
 		//angle range 270-90
-	
+		angle = Math.floor(Math.random() * 180) + 270;
 	}
-	if(eY > 599)
+	if(eY > 499 - eRadius)
 	{
 		//angle range 0-180
-	
+		angle = Math.floor(Math.random() * 180);
 	}
-	if(eY < 0)
+	if(eY < 0 + eRadius)
 	{
-		//angle range 180-0
-	
+		//angle range 180-360
+		angle = Math.floor(Math.random() * 180) + 180;
 	}
+	eX += Math.cos(angle * Math.PI / 180) * eSpeed;
+	eY += -1 * (Math.sin(angle * Math.PI / 180) * eSpeed);
 }
 
 function draw()
 {
-numberOfTicks++;
-if(numberOfTicks > 359)
-{
-	numberOfTicks = 0;
-}
+
 ctx.clearRect(0, 0, 800, 600);
 spaceship();
 enemyShip();
+enemyMovement();
 if(rP && posX < 750)
 {
 	posX += pSpeed;
