@@ -1,0 +1,134 @@
+<html>
+<head>
+	<style>
+	*{padding: 0; margin:0;}
+	canvas{ background: #eee; display: block; margin: 0 auto;}
+	</style>
+</head>
+
+<body>
+<canvas id= "myCanvas" width="800" height="600"></canvas>
+<script type="text/javascript">
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+//player stuff
+var posX = 400;
+var posY = 590;
+var pSpeed = 5;
+//enemy stuff
+var eX = 250;
+var eY = 250;
+var eDestX = 0;
+var eDestY = 0;
+var eRadius = 20;
+var eSpeed = .5;
+//control stuff
+var rP = false;
+var lP = false;
+var uP = false;
+
+function keyDownHandler(e){
+	if(e.keyCode == 39){
+	rP = true;
+	}
+	else if(e.keyCode == 37)
+	{
+	lP = true;
+	}
+	if(e.keyCode == 38)
+	{
+	uP = true;
+	}	
+}
+
+function keyUpHandler(e){
+	if(e.keyCode == 39){
+	rP = false;
+	}
+	else if(e.keyCode == 37)
+	{
+	lP = false;
+	}
+	if(e.keyCode == 38)
+	{
+	uP = false;
+	}	
+}
+
+function line(x1, y1, x2, y2, col = "black")
+{
+ctx.beginPath();
+ctx.strokeStyle = col;
+ctx.moveTo(x1, y1);
+ctx.lineTo(x2, y2);
+ctx.stroke();
+ctx.closePath();
+}
+
+function spaceship()
+{
+	line(posX, posY, posX + 50, posY);
+	line(posX + 50, posY, posX + 25, posY - 50);
+	line(posX + 25, posY - 50, posX, posY);
+}
+
+function enemyShip()
+{
+	ctx.beginPath();
+	ctx.fillStyle = "green";
+	ctx.strokeStyle = "green";
+	ctx.ellipse(eX, eY, eRadius, eRadius, Math.PI / 2, 0, 2 * Math.PI);
+	ctx.fill();
+	ctx.stroke();
+}
+
+function enemyMovement()
+{
+	if(eX > 799)
+	{
+		//angle range 90 - 270
+	
+	}
+	if(eX < 0)
+	{
+		//angle range 270-90
+	
+	}
+	if(eY > 599)
+	{
+		//angle range 0-180
+	
+	}
+	if(eY < 0)
+	{
+		//angle range 180-0
+	
+	}
+}
+
+function draw()
+{
+numberOfTicks++;
+if(numberOfTicks > 359)
+{
+	numberOfTicks = 0;
+}
+ctx.clearRect(0, 0, 800, 600);
+spaceship();
+enemyShip();
+if(rP && posX < 750)
+{
+	posX += pSpeed;
+}
+if(lP && posX > 0)
+{
+	posX -= pSpeed;
+}
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
