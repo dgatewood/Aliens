@@ -18,6 +18,7 @@ var posX = 400;
 var posY = 590;
 var pSpeed = 5;
 var canFire = true;
+var score = 0;
 //enemy stuff
 var eX = 250;
 var eY = 250;
@@ -28,10 +29,12 @@ var eSpeed = 5;
 //bullet stuff
 var bX = -1;
 var bY = -1;
+var bRadius = 2;
+var hasBulletFired = false;
 //control stuff
 var rP = false;
 var lP = false;
-var uP = false;
+var fire = false;
 var angle = 0;
 
 function keyDownHandler(e){
@@ -42,9 +45,9 @@ function keyDownHandler(e){
 	{
 	lP = true;
 	}
-	if(e.keyCode == 38)
+	if(e.keyCode == 32)
 	{
-	uP = true;
+	fire = true;
 	}	
 }
 
@@ -56,9 +59,9 @@ function keyUpHandler(e){
 	{
 	lP = false;
 	}
-	if(e.keyCode == 38)
+	if(e.keyCode == 32)
 	{
-	uP = false;
+	fire = false;
 	}	
 }
 
@@ -77,14 +80,23 @@ function spaceship()
 	line(posX, posY, posX + 50, posY);
 	line(posX + 50, posY, posX + 25, posY - 50);
 	line(posX + 25, posY - 50, posX, posY);
-	if(canFire)
+	if(!hasBulletFired)
 	{
 	ctx.beginPath();
-	ctx.fillStyle = "green";
-	ctx.strokeStyle = "green";
-	ctx.ellipse(posX + 25, posY - 25, 4, 4, Math.PI / 2, 0, 2 * Math.PI);
+	ctx.fillStyle = "red";
+	ctx.strokeStyle = "red";
+	ctx.ellipse(posX + 25, posY - 25, bRadius, bRadius, Math.PI / 2, 0, 2 * Math.PI);
 	ctx.fill();
 	ctx.stroke();
+	}
+	if(hasBulletFired)
+	{
+		ctx.beginPath();
+		ctx.fillStyle = "red";
+		ctx.strokeStyle = "red";
+		ctx.ellipse(bX, bY, bRadius, bRadius, Math.PI / 2, 0, 2 * Math.PI);
+		ctx.fill();
+		ctx.stroke();
 	}
 }
 
@@ -124,13 +136,44 @@ function enemyMovement()
 	eY += -1 * (Math.sin(angle * Math.PI / 180) * eSpeed);
 }
 
+function drawScore()
+{
+	ctx.fillStyle = "red";
+	ctx.font = "30px Arial";
+	ctx.fillText("Score: " + score, 10, 30);
+}
+
 function draw()
 {
 
 ctx.clearRect(0, 0, 800, 600);
 spaceship();
 enemyShip();
+drawScore();
 enemyMovement();
+var distance = Math.sqrt(((eX - bX) * (eX - bX))+((eY-bY)*(eY - bY)));
+if (distance < eRadius + bRadius)
+{
+    //balls have collided
+	hasBulletFired = false;
+	score++;
+	bX = posX + 25;
+	bY = posY - 50;
+}
+if(hasBulletFired)
+{
+	bY -= 6;
+}
+if(bY < 0)
+{
+	hasBulletFired = false;
+}
+if(fire && !hasBulletFired)
+{
+	bX = posX + 25;
+	bY = posY - 50;
+	hasBulletFired = true;
+}
 if(rP && posX < 750)
 {
 	posX += pSpeed;
