@@ -26,11 +26,18 @@ var eDestX = 0;
 var eDestY = 0;
 var eRadius = 20;
 var eSpeed = 5;
+var eBX =  eX;
+var eBY = eY;
+var eBRadius = 2;
+var eBAngle = 0;
+var eBSpeed = 7;
+var eHasBulletFired = false;
 //bullet stuff
 var bX = -1;
 var bY = -1;
 var bRadius = 2;
 var hasBulletFired = false;
+var slope = 0;
 //control stuff
 var rP = false;
 var lP = false;
@@ -143,6 +150,44 @@ function drawScore()
 	ctx.fillText("Score: " + score, 10, 30);
 }
 
+function enemyAttack()
+{
+	if(!eHasBulletFired)
+	{
+		if(eX >= posX)
+		{
+			slope = (posY - 25 - eY)/(eX - posX + 25);
+		}
+		else
+		{
+			slope = (posY - 25 - eY)/(posX + 25 - eX);
+		}
+		eBAngle = Math.atan(slope);
+		eHasBulletFired = true;
+	}
+	else
+	{
+	eBX += Math.cos(eBAngle) * eBSpeed;
+	eBY +=(Math.sin(eBAngle) * eBSpeed);
+	}
+	ctx.beginPath();
+	ctx.fillStyle = "blue";
+	ctx.strokeStyle = "blue";
+	ctx.ellipse(eBX, eBY, eBRadius, eBRadius, Math.PI / 2, 0, 2 * Math.PI);
+	ctx.fill();
+	ctx.stroke();
+	if(eBY > 600 || eBY < 0)
+	{
+		eHasBulletFired = false;
+		eBX = eX;
+		eBY = eY;
+	}
+	
+	var areaOrig = abs( (posX + 25 -posX)*(posY - posY) - (posX + 50 -posX)*(posY - 50 - posY) );
+	
+	
+}
+
 function draw()
 {
 
@@ -151,6 +196,7 @@ spaceship();
 enemyShip();
 drawScore();
 enemyMovement();
+enemyAttack();
 var distance = Math.sqrt(((eX - bX) * (eX - bX))+((eY-bY)*(eY - bY)));
 if (distance < eRadius + bRadius)
 {
