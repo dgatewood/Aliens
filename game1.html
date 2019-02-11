@@ -43,6 +43,21 @@ var rP = false;
 var lP = false;
 var fire = false;
 var angle = 0;
+var stars = [];
+function Star(x, y, radius)
+{
+	this.x = x,
+	this.y = y,
+	this.radius = radius
+}
+
+for(var a = 0; a < 30; a++)
+{
+	var r = Math.floor(Math.random() * 2) + 1;
+	var x = Math.floor(Math.random() * 800);
+	var y = Math.floor(Math.random() * 600);
+	stars[a] = new Star(x, y, r);
+}
 
 function keyDownHandler(e){
 	if(e.keyCode == 39){
@@ -207,9 +222,17 @@ function enemyAttack()
 
 function draw()
 {
-
 ctx.clearRect(0, 0, 800, 600);
-ctx.fillStyle = 
+ctx.fillStyle = "#a5acb7";
+ctx.fillRect(0,0, 800, 600);
+for(var a = 0; a < stars.length; a++)
+{
+ctx.fillStyle = "yellow";
+ctx.strokeStyle = "yellow";
+ctx.ellipse(stars[a].x, stars[a].y, stars[a].radius, stars[a].radius, Math.PI / 2, 0, 2 * Math.PI);
+ctx.fill();
+ctx.stroke();
+}
 spaceship();
 enemyShip();
 drawScore();
